@@ -1,4 +1,4 @@
-# diskinfo procedure
+# diskinfo install procedure
 
 Disk information: raid, lvm, uuid, mount points, etc.
 
