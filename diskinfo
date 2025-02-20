@@ -1,0 +1,107 @@
+#!/bin/bash
+
+# Exclure les périphériques loop et les membres RAID
+partitions=$(lsblk -nr -o NAME,TYPE,PKNAME | awk '$2 == "part" && $3 != "" {print "/dev/"$1}')
+
+echo "DISK INFO"
+echo "_________"
+echo ""
+
+# Tableau associatif pour stocker les partitions traitées
+declare -A processed_partitions
+
+# First part: process non-LVM partitions
+echo "Non-LVM partitions:"
+for part in $partitions; do
+    # Vérifier si la partition est un PV LVM
+    is_lvm_pv=$(pvs --noheadings -o pv_name "$part" 2>/dev/null | wc -l)
+
+    # Skip LVM partitions in this loop
+    if [[ "$is_lvm_pv" -eq 0 ]]; then
+        # Vérifier si la partition a déjà été traitée
+        if [[ -z "${processed_partitions[$part]}" ]]; then
+            uuid=$(blkid -s UUID -o value "$part")
+            partuuid=$(blkid -s PARTUUID -o value "$part")
+
+            if [[ -n "$uuid" ]]; then
+                # Obtenir le disque parent
+                parent_disk=$(lsblk -n -o PKNAME "$part")
+
+                # Vérifier si le disque parent contient "md" et afficher le type RAID si c'est le cas
+                if [[ "$parent_disk" == *md* ]]; then
+                    # Get the RAID level directly from /sys/block
+                    raid_type=$(cat /sys/block/"$parent_disk"/md/level 2>/dev/null)
+                    if [[ -n "$raid_type" ]]; then
+                        echo "raid: $raid_type"
+                    fi
+                else
+                    # For other partitions (non-LVM), show the usual volume info
+                    echo "volume: $parent_disk"
+                fi
+
+                # Check if the partition has a mountpoint
+                mountpoint=$(lsblk -n -o MOUNTPOINT "$part")
+
+                # Print partition details only once
+                if [[ -n "$mountpoint" ]]; then
+                    echo "  ├─ $part: UUID=$uuid PARTUUID=$partuuid"
+                    echo "  └─ MOUNTPOINT=$mountpoint"
+                else
+                    echo "  └─ $part: UUID=$uuid PARTUUID=$partuuid"
+                fi
+            fi
+
+            # Marquer la partition comme traitée
+            processed_partitions[$part]=true
+        fi
+    fi
+done
+
+echo ""
+echo "LVM partitions:"
+
+# Second part: process LVM partitions
+# (No need to rediscover partitions, use the existing $partitions variable)
+
+# Keep track of printed parent disks to avoid repeating
+declare -a printed_volumes
+
+# Process each partition
+for lvm_part in $partitions; do
+    # Check if the partition is a LVM physical volume (PV)
+    vg_name=$(pvs --noheadings -o vg_name "$lvm_part" 2>/dev/null | awk '{$1=$1};1')
+    if [[ -n "$vg_name" ]]; then
+        # Get the parent disk of the LVM partition (i.e., remove the partition number)
+        lvm_parent_disk=$(pvs -o pv_name --noheadings | while read pv; do lsblk -nd -o pkname "$pv"; done | sort -u)
+
+        lvm_parent_partition=$(pvs -o pv_name --noheadings | sed 's/^[[:space:]]*\/dev\///')
+
+        # Display partition and LVM information
+        echo "Volume: $lvm_parent_disk"
+        echo "  └─ partition: $lvm_parent_partition"
+        echo "    └─ lvm2: $vg_name"
+
+        # List the LVM logical volumes associated with the VG
+        lvs --noheadings -o lv_name,lv_path "$vg_name" | while read -r lv_name lv_path; do
+            lvm_uuid=$(blkid -s UUID -o value "$lv_path")
+            lvm_mountpoint=$(lsblk -n -o MOUNTPOINT "$lv_path")
+
+            # Print the LVM volume information with the UUID and mount point, indented under lvm2
+            if [[ -n "$lvm_uuid" ]]; then
+                if [[ -n "$lvm_mountpoint" ]]; then
+                    echo "      ├─ $lv_path: UUID=$lvm_uuid"
+                    echo "      └─ MOUNTPOINT=$lvm_mountpoint"
+                else
+                    echo "      └─ $lv_path: UUID=$lvm_uuid"
+                fi
+            else
+                if [[ -n "$lvm_mountpoint" ]]; then
+                    echo "      ├─ $lv_path: (pas d'UUID trouvé)"
+                    echo "      └─ MOUNTPOINT=$lvm_mountpoint"
+                else
+                    echo "      └─ $lv_path: (pas d'UUID trouvé)"
+                fi
+            fi
+        done
+    fi
+done
