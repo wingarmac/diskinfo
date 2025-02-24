@@ -10,4 +10,4 @@ sudo chmod a+x *.sh
 
 sudo ./diskinfo.sh
 
-The ./lvm2info is the only part that requires sudo and can also be launched individually.
+The ./lvm2info.sh is the only part that requires sudo and can also be launched individually.
