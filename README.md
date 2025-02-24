@@ -10,7 +10,8 @@ Disk information: raid, lvm, uuid, mount points, etc.
 
 `sudo ./diskinfo.sh`
 
-The `./lvm2info.sh` is the only part that requires `sudo` and can also be launched individually with `sudo ./lvm2info.sh`.
+The LVM DISK INFO is the only part that requires `sudo` and can also be launched individually with `sudo ./lvm2info.sh`.
+
 
 ```
 DISK INFO
