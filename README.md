@@ -6,6 +6,6 @@ git clone https://github.com/wingarmac/diskinfo/
 
 cd diskinfo
 
-sudo chmod a+x diskinfo
+sudo chmod a+x *.sh
 
-sudo ./diskinfo
+sudo ./diskinfo.sh
