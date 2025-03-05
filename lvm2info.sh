@@ -10,6 +10,13 @@
 WORKING_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$WORKING_DIR" || { echo "Cannot change to $WORKING_DIR"; exit 1; }
 
+# Define ANSI color codes
+RED="\033[1;31m"
+RESET="\033[0m"
+
+echo -e "${RED}LVM DISK INFO${RESET}"
+echo -e "${RED}______________${RESET}"
+echo ""
 
 # On récupère la liste des disques qui possèdent au moins un PV LVM.
 lvm_pvs=$(pvs --noheadings -o pv_name 2>/dev/null | awk '{$1=$1};1')
@@ -86,4 +93,3 @@ for disk in "${!lvm_disks[@]}"; do
         fi
     done
     echo ""
-done
