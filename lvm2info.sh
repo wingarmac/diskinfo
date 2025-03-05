@@ -6,6 +6,9 @@
 #      • Les partitions non‑LVM (ex: /boot, /boot-efi) avec UUID, PARTUUID, mountpoint et, si applicable, leur espace via df
 #      • Le bloc LVM (le PV servant de conteneur) avec le groupe LVM (lvm2) et sa taille,
 #        suivi de la liste des volumes logiques (affichant pour chacun l'UUID et, pour ceux montés et non SWAP, la taille totale et l'espace libre)
+# Set WORKING_DIR to the directory where this script resides
+WORKING_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$WORKING_DIR" || { echo "Cannot change to $WORKING_DIR"; exit 1; }
 
 
 # On récupère la liste des disques qui possèdent au moins un PV LVM.
