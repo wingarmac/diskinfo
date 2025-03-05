@@ -1,3 +1,9 @@
+# Last upgrades (05-03-2025):
+- Sizes per mounts
+- Title and subtitles color codes
+- Séparated script for raid information
+
+
 # diskinfo install procedure
 
 Disk information: raid, lvm, uuid, mount points, etc.
