@@ -77,7 +77,6 @@ volume: nvme2n1   Size: 465,8G
   └─ MOUNTPOINT=/boot
   Size: 2G     Left: 2G
 
-# [Intended: The following RAID info is in light green]
 RAID DISK INFO
 ______________
 
@@ -89,7 +88,6 @@ Partition: /dev/md126p1  Size: 931,5G
   └─ MOUNTPOINT=/home/USERNAME
   Partition Size: 916G  Free: 663G
 
-# [Intended: The following LVM info is in red]
 LVM DISK INFO
 ______________
 
