@@ -93,3 +93,4 @@ for disk in "${!lvm_disks[@]}"; do
         fi
     done
     echo ""
+done
