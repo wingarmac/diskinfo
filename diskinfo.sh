@@ -1,5 +1,8 @@
 #!/bin/bash
 # Version améliorée : ajout de la taille de chaque disque
+# Parametrage du repertoire source WORKING_DIR ou le script reside.
+WORKING_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$WORKING_DIR" || { echo "Cannot change to $WORKING_DIR"; exit 1; }
 
 echo "DISK INFO"
 echo "_________"
