@@ -3,6 +3,20 @@
 - Title and subtitles color codes
 - Séparated script for raid information
 
+## Inventaire des couleurs utilisées
+
+| Couleur        | Code ANSI     | Pastille                                                                                 | Code HEX    |
+|----------------|---------------|-------------------------------------------------------------------------------------------|-------------|
+| **Lighter Blue** (titre) | ``\033[1;94m`` | ![#1E90FF](https://placehold.co/15x15/1E90FF/1E90FF.png) `#1E90FF`  | `#1E90FF`   |
+| **Light Blue** (sous-titre) | ``\033[1;34m`` | ![#0000FF](https://placehold.co/15x15/0000FF/0000FF.png) `#0000FF`   | `#0000FF`   |
+| **Light Green** (RAID)     | ``\033[1;32m`` | ![#32CD32](https://placehold.co/15x15/32CD32/32CD32.png) `#32CD32`   | `#32CD32`   |
+| **Red** (LVM)              | ``\033[1;31m`` | ![#FF0000](https://placehold.co/15x15/FF0000/FF0000.png) `#FF0000`   | `#FF0000`   |
+
+> **Remarque :** Les couleurs exactes peuvent varier selon le terminal et le thème (clair/sombre). Les codes HEX ci-dessus sont de simples approximations visuelles pour donner une idée.  
+
+Ces séquences ANSI sont suivies de ``\033[0m`` pour réinitialiser la couleur (variable `$RESET` dans tes scripts).
+
+
 
 # diskinfo install procedure
 
