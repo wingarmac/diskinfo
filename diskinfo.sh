@@ -1,34 +1,42 @@
 #!/bin/bash
-# Version améliorée : ajout de la taille de chaque disque
-# Parametrage du repertoire source WORKING_DIR ou le script reside.
+# diskinfo.sh - Main script for disk info, excluding RAID and LVM which are handled separately.
+
+# Define ANSI color codes
+LIGHTER_BLUE="\033[1;94m"  # for main title (lighter blue)
+LIGHT_BLUE="\033[1;34m"    # for subtitle (light blue)
+RESET="\033[0m"
+
+# Set WORKING_DIR to the directory where this script resides.
 WORKING_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$WORKING_DIR" || { echo "Cannot change to $WORKING_DIR"; exit 1; }
 
-echo "DISK INFO"
-echo "_________"
+# Main Title (lighter blue)
+echo ""
+echo -e "${LIGHTER_BLUE}______________${RESET}"
+echo ""
+echo -e "${LIGHTER_BLUE}DISK INFO${RESET}"
+echo -e "${LIGHTER_BLUE}______________${RESET}"
 echo ""
 
-# Récupère les partitions liées à un disque
+# Subtitle for standard (non-RAID, non-LVM) disks (light blue)
+echo -e "${LIGHT_BLUE}Standard disks and partitions:${RESET}"
+echo -e "${LIGHT_BLUE}______________________________${RESET}"
+echo ""
+
+# Get all partitions.
 partitions=$(lsblk -nr -o NAME,TYPE,PKNAME | awk '$2=="part" && $3!="" {print "/dev/"$1}')
 
-echo "Non-LVM partitions:"
 for part in $partitions; do
-    # Si la partition n'est pas un PV LVM
+    # Skip if partition is an LVM physical volume.
     is_lvm_pv=$(pvs --noheadings -o pv_name "$part" 2>/dev/null | wc -l)
-    if [[ "$is_lvm_pv" -eq 0 ]]; then
-        parent_disk=$(lsblk -n -o PKNAME "$part")
+    parent_disk=$(lsblk -n -o PKNAME "$part")
+    # Exclude RAID partitions (parent contains "md")
+    if [[ "$is_lvm_pv" -eq 0 && "$parent_disk" != *md* ]]; then
         disk_path="/dev/$parent_disk"
         disk_size=$(lsblk -nd -o SIZE "$disk_path")
+        echo "volume: $parent_disk		Size: $disk_size"
         
-        # Affichage du type et de la taille du disque parent
-        if [[ "$parent_disk" == *md* ]]; then
-            raid_type=$(cat /sys/block/"$parent_disk"/md/level 2>/dev/null)
-            echo "raid: $raid_type		Size: $disk_size"
-        else
-            echo "volume: $parent_disk		Size: $disk_size"
-        fi
-        
-        # Récupération des infos de la partition
+        # Retrieve partition details.
         uuid=$(blkid -s UUID -o value "$part")
         partuuid=$(blkid -s PARTUUID -o value "$part")
         mountpoint=$(lsblk -n -o MOUNTPOINT "$part")
@@ -40,7 +48,7 @@ for part in $partitions; do
             echo "  └─ $part: UUID=$uuid PARTUUID=$partuuid"
         fi
         
-        # Pour une partition montée (hors EFI et SWAP), afficher la taille et l'espace libre
+        # If the partition is mounted (and not EFI or SWAP), show size and free space.
         if [[ -n "$mountpoint" && "$mountpoint" != "/boot/efi" && "$mountpoint" != "[SWAP]" ]]; then
             df_out=$(df -BG "$mountpoint" | awk 'NR==2 {print $2, $4}')
             total=${df_out%% *}
@@ -51,7 +59,8 @@ for part in $partitions; do
     fi
 done
 
-echo "LVM DISK INFO"
-echo "_________"
-echo ""
+# Call the separate RAID script (it prints its own header).
+./raidinfo.sh
+
+# Call the separate LVM script (it prints its own header).
 ./lvm2info.sh
