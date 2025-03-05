@@ -20,63 +20,74 @@ The LVM DISK INFO is the only part that requires `sudo` and can also be launched
 
 
 ```
+# (The following headings are color-coded when running in your terminal:)
+# Main title is in lighter blue, subtitles in light blue,
+# RAID info in light green, and LVM info in red.
+
+______________
 DISK INFO
-_________
+______________
 
-Non-LVM partitions:
-raid: raid0                Size: #
-  ├─ /dev/md126p1: UUID=## PARTUUID=##
-  └─ MOUNTPOINT=/home/wingarmac
-  Size: #            Left: #
+Standard disks and partitions:
+______________________________
 
-raid: raid0                Size: #
-  ├─ /dev/md126p1: UUID=## PARTUUID=##
-  └─ MOUNTPOINT=/home/wingarmac
-  Size: #            Left: #
+volume: nvme1n1   Size: 119,2G
+  └─ /dev/nvme1n1p1: UUID=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX PARTUUID=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
 
-volume: nvme1n1          Size: #
-  └─ /dev/nvme1n1p1: UUID=## PARTUUID=##
+volume: nvme1n1   Size: 119,2G
+  ├─ /dev/nvme1n1p2: UUID=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX PARTUUID=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+  └─ MOUNTPOINT=/mnt/OS-BOOT
+  Size: 59G    Left: 43G
 
-volume: nvme1n1          Size: #
-  ├─ /dev/nvme1n1p2: UUID=## PARTUUID=##
-  └─ MOUNTPOINT=/mnt/ubuntu-desktop
-  Size: #            Left: #
+volume: nvme1n1   Size: 119,2G
+  ├─ /dev/nvme1n1p5: UUID=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX PARTUUID=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+  └─ MOUNTPOINT=/mnt/LANSHARE
+  Size: 40G    Left: 38G
 
-volume: nvme1n1          Size: #
-  ├─ /dev/nvme1n1p5: UUID=## PARTUUID=##
-  └─ MOUNTPOINT=/mnt/lanshare
-  Size: #            Left: #
+volume: nvme1n1   Size: 119,2G
+  ├─ /dev/nvme1n1p7: UUID=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX PARTUUID=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+  └─ MOUNTPOINT=/mnt/SECOND-MOUNT
+  Size: 18G    Left: 17G
 
-volume: nvme1n1          Size: #
-  ├─ /dev/nvme1n1p7: UUID=## PARTUUID=##
-  └─ MOUNTPOINT=/mnt/some-mountpoint  # Replaced UUID with generic name
-  Size: #            Left: #
+volume: nvme0n1   Size: 465,8G
+  ├─ /dev/nvme0n1p1: UUID=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX PARTUUID=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+  └─ MOUNTPOINT=/mnt/VIRT
+  Size: 458G   Left: 395G
 
-volume: nvme2n1          Size: #
-  ├─ /dev/nvme2n1p1: UUID=## PARTUUID=##
+volume: nvme2n1   Size: 465,8G
+  ├─ /dev/nvme2n1p1: UUID=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX PARTUUID=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
   └─ MOUNTPOINT=/boot/efi
 
-volume: nvme2n1          Size: #
-  ├─ /dev/nvme2n1p2: UUID=## PARTUUID=##
+volume: nvme2n1   Size: 465,8G
+  ├─ /dev/nvme2n1p2: UUID=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX PARTUUID=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
   └─ MOUNTPOINT=/boot
-  Size: #            Left: #
+  Size: 2G     Left: 2G
 
-volume: nvme0n1         Size: #
-  ├─ /dev/nvme0n1p1: UUID=## PARTUUID=##
-  └─ MOUNTPOINT=/mnt/virt-nvme
-  Size: #            Left: #
+# [Intended: The following RAID info is in light green]
+RAID DISK INFO
+______________
 
+RAID: raid0
+RAID Device: /dev/md126
+Members: /dev/sda,/dev/sdb
+Partition: /dev/md126p1  Size: 931,5G
+  ├─ UUID=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX PARTUUID=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
+  └─ MOUNTPOINT=/home/USERNAME
+  Partition Size: 916G  Free: 663G
+
+# [Intended: The following LVM info is in red]
 LVM DISK INFO
-_________
+______________
 
-Volume: nvme2n1          Size: #
-  ├─ /dev/nvme2n1p1: UUID=## PARTUUID=##
+Volume: nvme2n1   Size: 465,8G
+  ├─ /dev/nvme2n1p1: UUID=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX PARTUUID=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
   └─ MOUNTPOINT=/boot/efi
-  ├─ /dev/nvme2n1p2: UUID=## PARTUUID=##
+  ├─ /dev/nvme2n1p2: UUID=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX PARTUUID=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
   └─ MOUNTPOINT=/boot
-  └─ lvm2: cinnamon-vg      Size: #
-      ├─ /dev/cinnamon-vg/swap: UUID=##
+  └─ lvm2: VG_NAME   Size: 462,7G
+      ├─ /dev/VG_NAME/swap: UUID=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
       └─ MOUNTPOINT=[SWAP]
-      ├─ /dev/cinnamon-vg/ubuntu_cin: UUID=##
+      ├─ /dev/VG_NAME/OS_ROOT: UUID=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
       └─ MOUNTPOINT=/
-      Size: #            Left: #
+      Size: 448G   Left: 360G
+
