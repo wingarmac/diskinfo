@@ -59,8 +59,3 @@ for part in $partitions; do
     fi
 done
 
-# Call the separate RAID script (it prints its own header).
-./raidinfo.sh
-
-# Call the separate LVM script (it prints its own header).
-./lvm2info.sh
