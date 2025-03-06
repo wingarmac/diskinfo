@@ -1,37 +1,55 @@
-# Last upgrades (05-03-2025):
+# Last upgrades (06-03-2025):
+Granular control and menu adiditon with pre-selection for standard or dialog menu at start of it.
+
+## Upgrades (05-03-2025):
 - Sizes per mounts
 - Title and subtitles color codes
 - Séparated script for raid information
 
-## Inventaire des couleurs utilisées
 
-| Couleur        | Code ANSI     | Pastille                                                                                 | Code HEX    |
-|----------------|---------------|-------------------------------------------------------------------------------------------|-------------|
-| **Lighter Blue** (titre) | ``\033[1;94m`` | ![#1E90FF](https://placehold.co/15x15/1E90FF/1E90FF.png) `#1E90FF`  | `#1E90FF`   |
-| **Light Blue** (sous-titre) | ``\033[1;34m`` | ![#0000FF](https://placehold.co/15x15/0000FF/0000FF.png) `#0000FF`   | `#0000FF`   |
-| **Light Green** (RAID)     | ``\033[1;32m`` | ![#32CD32](https://placehold.co/15x15/32CD32/32CD32.png) `#32CD32`   | `#32CD32`   |
-| **Red** (LVM)              | ``\033[1;31m`` | ![#FF0000](https://placehold.co/15x15/FF0000/FF0000.png) `#FF0000`   | `#FF0000`   |
-
-> **Remarque :** Les couleurs exactes peuvent varier selon le terminal et le thème (clair/sombre). Les codes HEX ci-dessus sont de simples approximations visuelles pour donner une idée.  
-
-Ces séquences ANSI sont suivies de ``\033[0m`` pour réinitialiser la couleur (variable `$RESET` dans tes scripts).
-
-
-
-# diskinfo install procedure
+## diskinfo install procedure
 
 Disk information: raid, lvm, uuid, mount points, etc.
 
-`git clone https://github.com/wingarmac/diskinfo/`
+1. `git clone https://github.com/wingarmac/diskinfo/`
 
-`cd diskinfo`
+2. `cd diskinfo`
 
-`sudo chmod a+x *.sh`
+3. `sudo chmod a+x *.sh`
 
-`sudo ./diskinfo.sh`
+A. You can now manualy start the disired output with te wanted script since 06-03-2025
 
-The LVM DISK INFO is the only part that requires `sudo` and can also be launched individually with `sudo ./lvm2info.sh`.
+- `./diskinfo.sh` - ext4 drives
+ 
+- `./raidinfo.sh` - raid drives
 
+- `sudo ./lvm2info.sh` - lvm drives (only one that requiring root privilleges)
+
+- `sudo ./combined.sh` - for all togheter
+
+B. With `./diskdialog.sh`
+
+At start of the script it will ask for requirements depending on your choices using dialog that require the package or lvm that requires privilleges
+
+B.1. You can make usage of the nomal menu 
+
+```
+~$ diskinfo/diskdialog.sh
+Use dialog for the menu? [y/N] N
+Select Disk Information:
+1) All Information
+2) Standard Disks
+3) RAID Information
+4) LVM Information
+5) Exit
+#? 
+
+```
+B.2. With dialog:
+
+![image](https://github.com/user-attachments/assets/5ee558a2-a1e9-43f5-997c-43b1f0c76f30)
+
+Full output example:
 
 ```
 # (The following headings are color-coded when running in your terminal:)
@@ -102,4 +120,18 @@ Volume: nvme2n1   Size: 465,8G
       ├─ /dev/VG_NAME/OS_ROOT: UUID=XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX
       └─ MOUNTPOINT=/
       Size: 448G   Left: 360G
+```
+
+## Inventory of used collors
+
+| Couleur        | Code ANSI     | Pastille                                                                                 | Code HEX    |
+|----------------|---------------|-------------------------------------------------------------------------------------------|-------------|
+| **Lighter Blue** (titre) | ``\033[1;94m`` | ![#1E90FF](https://placehold.co/15x15/1E90FF/1E90FF.png) `#1E90FF`  | `#1E90FF`   |
+| **Light Blue** (sous-titre) | ``\033[1;34m`` | ![#0000FF](https://placehold.co/15x15/0000FF/0000FF.png) `#0000FF`   | `#0000FF`   |
+| **Light Green** (RAID)     | ``\033[1;32m`` | ![#32CD32](https://placehold.co/15x15/32CD32/32CD32.png) `#32CD32`   | `#32CD32`   |
+| **Red** (LVM)              | ``\033[1;31m`` | ![#FF0000](https://placehold.co/15x15/FF0000/FF0000.png) `#FF0000`   | `#FF0000`   |
+
+> **Note:** Exact colors may vary by device and theme (light/dark). The HEX codes above are just visual approximations to give an idea.  
+
+These ANSI sequences are followed by ``\033[0m`` to reset the color (`$RESET` variable in your scripts).
 
