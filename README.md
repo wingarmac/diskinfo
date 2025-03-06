@@ -1,3 +1,24 @@
+# Diskinfo
+
+A simple script to display disk information.
+Made on Ubuntu (24.10) levarging the official repos.
+
+## Features
+
+Leveraging several tools:
+
+`lsblk` Lists block devices, showing relationships between disks, partitions, and mount points.
+
+`blkid` Identifies block devices and displays attributes such as UUID, PARTUUID, and filesystem type.
+
+`pvs` Shows physical volumes used by LVM (Logical Volume Manager).
+
+`lvs` Lists logical volumes within an LVM volume group.
+
+`mdadm` Manages software RAID arrays, providing detailed status and configuration options.
+
+`df` Displays filesystem usage information, including total size and free space on mounted partitions.
+
 # Last upgrades (06-03-2025):
 Granular control and menu adiditon with pre-selection for standard or dialog menu at start of it.
 
