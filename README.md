@@ -37,6 +37,12 @@ To install the script and make it available as a system-wide command, follow the
     ```
     *After installation, you can safely delete the `netinfo` directory you cloned.*
 
+5.  **Clean up:**
+    ```bash
+    rm -rf netinfo
+    ```
+    This removes the cloned directory as it is no longer needed.
+
 ## Usage
 
 Once installed, you can use the `netinfo` command directly from any directory.
